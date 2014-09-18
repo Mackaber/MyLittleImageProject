@@ -1,12 +1,14 @@
 package com.mli.mackaber.mylittleimageproject.activities;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.j256.ormlite.dao.Dao;
@@ -30,6 +32,7 @@ public class MainActivity extends Activity {
     private ListView list;
     private Dao<Pictures.Picture, Integer> pictureDao = null;
     private Activity activity = this;
+    private PicturesAdapter adapter;
 
     private List<Pictures.Picture> picturesToInsert = new ArrayList<Pictures.Picture>();
 
@@ -44,6 +47,9 @@ public class MainActivity extends Activity {
         list = (ListView) findViewById(R.id.listView);
 
         repo = new PictureRepository(Aplication.getApplication().getContext());
+
+        list.setOnItemClickListener(itemClickHandler);
+
     }
 
 
@@ -69,6 +75,14 @@ public class MainActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
+    private AdapterView.OnItemClickListener itemClickHandler = new AdapterView.OnItemClickListener() {
+        public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+            Intent intent = new Intent(getApplicationContext(), Picture_detail.class);
+            intent.putExtra(Picture_detail.ARG_ITEM_ID, adapter.getPictureAt(position).getId());
+            startActivity(intent);
+        }
+    };
+
     public void cleardatabase(){
         try {
             Aplication.getApplication().cleanPictures();
@@ -87,7 +101,7 @@ public class MainActivity extends Activity {
 
             Pictures repre = Aplication.getApplication().getRestAdapter().create(Pictures.class);
             try {
-                pictureDao = Aplication.getApplication().getArticleDao();
+                pictureDao = Aplication.getApplication().getPictureeDao();
                 Log.d("The table exists: ", pictureDao.isTableExists() + "");
                 Log.d("The size is more than 0 : ", (pictureDao.queryForAll().size()) + "");
                 if(pictureDao.isTableExists() && pictureDao.queryForAll().size()>0) {
@@ -120,19 +134,20 @@ public class MainActivity extends Activity {
 
         @Override
         public void onPostExecute(Void result) {
-            PicturesAdapter adapter = new PicturesAdapter(activity,R.layout.list_item, pictures);
+            adapter = new PicturesAdapter(activity,R.layout.list_item, pictures);
             list.setAdapter(adapter);
 
-            try {
-                pictureDao = Aplication.getApplication().getArticleDao();
-
-                for(Pictures.Picture p :  pictures) {
-                    pictureDao.queryForAll();
-                }
-//                articleDao.c(news);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+//          ESTO NO HACE NADA XP
+//            try {
+//                pictureDao = Aplication.getApplication().getPictureeDao();
+//
+//                for(Pictures.Picture p :  pictures) {
+//                    pictureDao.queryForAll();
+//                }
+////                articleDao.c(news);
+//            } catch (SQLException e) {
+//                e.printStackTrace();
+//            }
 
             activity.setProgressBarIndeterminateVisibility(false);
         }

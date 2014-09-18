@@ -1,6 +1,7 @@
 package com.mli.mackaber.mylittleimageproject.adapters;
 
 import android.app.Activity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.app.Activity;
 import android.content.Context;
@@ -24,6 +25,7 @@ public class PicturesAdapter extends ArrayAdapter<String> {
     private Activity activity;
     private LayoutInflater inflater;
     private List<Pictures.Picture> pictures;
+    private PicturesHolder holder;
 
     public PicturesAdapter(Activity a, int textViewResourceId, List<Pictures.Picture> items) {
         super(a, textViewResourceId);
@@ -35,9 +37,9 @@ public class PicturesAdapter extends ArrayAdapter<String> {
 
     public int getCount() { return pictures.size(); }
 
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public Pictures.Picture getPictureAt(int position){  return pictures.get(position); }
 
-        PicturesHolder holder;
+    public View getView(int position, View convertView, ViewGroup parent) {
 
         inflater = (LayoutInflater) activity
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -52,18 +54,24 @@ public class PicturesAdapter extends ArrayAdapter<String> {
 
         Pictures.Picture picture = pictures.get(position);
 
+        Log.d("ID del adapter:", position + "");
+
+        holder.setId(picture.getId());
         holder.title.setText(picture.getTitle());
 //        holder.url.setText(picture.getUrl());
-
         Picasso.with(Aplication.getApplication().getContext()).load(picture.getUrl()).resize(90, 90).into(holder.imageUrl);
 
         return convertView;
     }
 
     private static class PicturesHolder {
+        public int id;
         public TextView title;
         public TextView url;
         public ImageView imageUrl;
+
+        public void setId(int id) { this.id = id; }
+        public int getId(){ return id; }
     }
 
 }
