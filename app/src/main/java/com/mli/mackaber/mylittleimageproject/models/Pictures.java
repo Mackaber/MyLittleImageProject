@@ -7,9 +7,14 @@ import java.util.List;
 
 import retrofit.Callback;
 import retrofit.http.Body;
+import retrofit.http.Field;
 import retrofit.http.GET;
+import retrofit.http.Multipart;
 import retrofit.http.POST;
+import retrofit.http.Part;
 import retrofit.http.Path;
+import retrofit.mime.TypedFile;
+import retrofit.mime.TypedString;
 
 /**
  * Created by mackaber on 17/09/14.
@@ -18,8 +23,11 @@ public interface Pictures {
     @GET("/pictures")
     List<Picture> getAllPictures();
 
+    @Multipart
     @POST("/pictures")
-    void createPicture(@Body Picture picture, Callback<Picture> cb);
+    void createPicture(@Part("title")String title, @Part("image")TypedFile photo, Callback<Picture> cb);
+//    void createPicture(@Body Picture picture, Callback<Picture> cb);
+//    void createPicture(@Part("picture") Picture picture, Callback<Picture> cb);
 
     @DatabaseTable(tableName = "pictures")
     public class Picture {
@@ -38,5 +46,6 @@ public interface Pictures {
 
         public String getUrl(){ return url; }
         public void setUrl(String url){ this.url = url; }
+
     }
 }

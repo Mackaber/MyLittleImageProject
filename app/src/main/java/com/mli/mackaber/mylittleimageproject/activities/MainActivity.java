@@ -2,6 +2,12 @@ package com.mli.mackaber.mylittleimageproject.activities;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,6 +26,9 @@ import com.mli.mackaber.mylittleimageproject.models.PictureRepository;
 import com.mli.mackaber.mylittleimageproject.models.Pictures;
 
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +37,7 @@ import java.util.concurrent.Callable;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import retrofit.mime.TypedFile;
 
 /*
     This is the List Activity Class
@@ -110,7 +120,34 @@ public class MainActivity extends Activity {
         picture = new Pictures.Picture();
 
         picture.setTitle("Test");
-        picture.setUrl("Test URL");
+
+        Bitmap photo = BitmapFactory.decodeResource(getResources(), R.drawable.fluttershy);
+
+        File imageFileFolder = new File(getCacheDir(),"Avatar");
+        if( !imageFileFolder.exists() ){
+            imageFileFolder.mkdir();
+        }
+
+        FileOutputStream out = null;
+
+        File imageFileName = new File(imageFileFolder, "avatar-" + System.currentTimeMillis() + ".jpg");
+        try {
+            out = new FileOutputStream(imageFileName);
+            photo.compress(Bitmap.CompressFormat.JPEG, 100, out);
+            out.flush();
+        } catch (IOException e) {
+            Log.e("TAG", "Failed to convert image to JPEG", e);
+        } finally {
+            try {
+                if (out != null) {
+                    out.close();
+                }
+            } catch (IOException e) {
+                Log.e("TAG", "Failed to close output stream", e);
+            }
+        }
+
+        TypedFile typedFile = new TypedFile("image/jpeg", imageFileName);
 
         Callback<Pictures.Picture> callback;
         callback = new Callback<Pictures.Picture>() {
@@ -136,7 +173,8 @@ public class MainActivity extends Activity {
             }
         };
 
-        repre.createPicture(picture,callback);
+
+       repre.createPicture(picture.getTitle(),typedFile,callback);
     }
 
     public void cleardatabase(){
