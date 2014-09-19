@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.j256.ormlite.dao.Dao;
 import com.mli.mackaber.mylittleimageproject.Aplication;
@@ -24,19 +25,32 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+
+/*
+    This is the List Activity Class
+*/
 
 public class MainActivity extends Activity {
 
+//  Object Variables
     private PictureRepository repo;
     private List<Pictures.Picture> pictures;
-    private ListView list;
+
+//  Database Variables
     private Dao<Pictures.Picture, Integer> pictureDao = null;
+    public static final int CLEAR_DB = Menu.FIRST;
+    public static final int NEW_PONY = 2;
+
+//  View Variables
+    private ListView list;
     private Activity activity = this;
     private PicturesAdapter adapter;
-
     private List<Pictures.Picture> picturesToInsert = new ArrayList<Pictures.Picture>();
 
-    public static final int CLEAR_DB = Menu.FIRST;
+//V----------------------------------------------- ACTIVITY METHODS ----------------------------------------------------------------V
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +72,7 @@ public class MainActivity extends Activity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main_activity, menu);
         menu.add(0,CLEAR_DB,0,R.string.clear_database);
+        menu.add(1,NEW_PONY,1,R.string.new_pony);
         return true;
     }
 
@@ -71,9 +86,14 @@ public class MainActivity extends Activity {
             case CLEAR_DB:
                 cleardatabase();
                 return true;
+            case NEW_PONY:
+                new_picture();
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
+
+//V----------------------------------------------- CUSTOM METHODS ----------------------------------------------------------------V
 
     private AdapterView.OnItemClickListener itemClickHandler = new AdapterView.OnItemClickListener() {
         public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
@@ -83,9 +103,46 @@ public class MainActivity extends Activity {
         }
     };
 
+    public void new_picture(){
+
+        Pictures repre = Aplication.getApplication().getRestAdapter().create(Pictures.class);
+        Pictures.Picture picture;
+        picture = new Pictures.Picture();
+
+        picture.setTitle("Test");
+        picture.setUrl("Test URL");
+
+        Callback<Pictures.Picture> callback;
+        callback = new Callback<Pictures.Picture>() {
+            @Override
+            public void success(Pictures.Picture picture, Response response) {
+                Toast.makeText(getApplicationContext(), picture.getTitle(),
+                        Toast.LENGTH_LONG).show();
+                Log.d("Si jalo: ", picture.getTitle());
+                try {
+                    pictureDao = Aplication.getApplication().getPictureeDao();
+                    pictureDao.create(picture);
+                    activity.recreate();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Toast.makeText(getApplicationContext(), "FAIL!",
+                        Toast.LENGTH_LONG).show();
+            }
+        };
+
+        repre.createPicture(picture,callback);
+    }
+
     public void cleardatabase(){
         try {
             Aplication.getApplication().cleanPictures();
+            activity.recreate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -136,19 +193,6 @@ public class MainActivity extends Activity {
         public void onPostExecute(Void result) {
             adapter = new PicturesAdapter(activity,R.layout.list_item, pictures);
             list.setAdapter(adapter);
-
-//          ESTO NO HACE NADA XP
-//            try {
-//                pictureDao = Aplication.getApplication().getPictureeDao();
-//
-//                for(Pictures.Picture p :  pictures) {
-//                    pictureDao.queryForAll();
-//                }
-////                articleDao.c(news);
-//            } catch (SQLException e) {
-//                e.printStackTrace();
-//            }
-
             activity.setProgressBarIndeterminateVisibility(false);
         }
     }

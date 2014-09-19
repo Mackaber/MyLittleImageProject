@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">MyLittleImageProject</string>
+    <string name="app_name">Pictures</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="server">http://private-1975-mylittleapi.apiary-mock.com/</string>
     <string name="clear_database">Clear Database</string>
-    <string name="title_activity_picture_detail">Picture_detail</string>
+    <string name="new_pony">New Picture</string>
+    <string name="title_activity_picture_detail">Picture Detail</string>
+    <string name="title_activity_new__picture">new_Picture</string>
 
 </resources>

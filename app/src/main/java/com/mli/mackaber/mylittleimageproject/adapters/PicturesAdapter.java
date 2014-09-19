@@ -35,9 +35,9 @@ public class PicturesAdapter extends ArrayAdapter<String> {
         inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
-    public int getCount() { return pictures.size(); }
-
     public Pictures.Picture getPictureAt(int position){  return pictures.get(position); }
+
+    public int getCount() { return pictures.size(); }
 
     public View getView(int position, View convertView, ViewGroup parent) {
 
@@ -47,7 +47,6 @@ public class PicturesAdapter extends ArrayAdapter<String> {
         holder = new PicturesHolder();
         convertView = inflater.inflate(R.layout.list_item, parent, false);
         holder.title = (TextView)convertView.findViewById(R.id.title);
-//        holder.url = (TextView)convertView.findViewById(R.id.url);
         holder.imageUrl = (ImageView)convertView.findViewById(R.id.imageUrl);
 
         convertView.setTag(holder);
@@ -56,22 +55,17 @@ public class PicturesAdapter extends ArrayAdapter<String> {
 
         Log.d("ID del adapter:", position + "");
 
-        holder.setId(picture.getId());
         holder.title.setText(picture.getTitle());
-//        holder.url.setText(picture.getUrl());
         Picasso.with(Aplication.getApplication().getContext()).load(picture.getUrl()).resize(90, 90).into(holder.imageUrl);
 
         return convertView;
     }
 
     private static class PicturesHolder {
-        public int id;
         public TextView title;
         public TextView url;
         public ImageView imageUrl;
 
-        public void setId(int id) { this.id = id; }
-        public int getId(){ return id; }
     }
 
 }

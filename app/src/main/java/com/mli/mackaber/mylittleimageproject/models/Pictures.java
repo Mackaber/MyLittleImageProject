@@ -5,7 +5,10 @@ import com.j256.ormlite.table.DatabaseTable;
 
 import java.util.List;
 
+import retrofit.Callback;
+import retrofit.http.Body;
 import retrofit.http.GET;
+import retrofit.http.POST;
 import retrofit.http.Path;
 
 /**
@@ -14,6 +17,9 @@ import retrofit.http.Path;
 public interface Pictures {
     @GET("/pictures")
     List<Picture> getAllPictures();
+
+    @POST("/pictures")
+    void createPicture(@Body Picture picture, Callback<Picture> cb);
 
     @DatabaseTable(tableName = "pictures")
     public class Picture {

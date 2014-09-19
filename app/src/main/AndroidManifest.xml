@@ -21,6 +21,10 @@
             android:name=".activities.Picture_detail"
             android:label="@string/title_activity_picture_detail" >
         </activity>
+        <activity
+            android:name=".activities.New_picture"
+            android:label="@string/title_activity_new__picture" >
+        </activity>
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />
