@@ -37,7 +37,7 @@ public class Picture_detail extends Activity {
         ImageView image = (ImageView) findViewById(R.id.displayImage);
 
         try {
-            pictureDao = Aplication.getApplication().getPictureeDao();
+            pictureDao = Aplication.getApplication().getPictureDao();
 
             picture = pictureDao.queryForId(id);
         } catch (SQLException e) {

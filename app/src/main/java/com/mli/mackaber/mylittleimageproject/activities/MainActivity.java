@@ -54,6 +54,8 @@ public class MainActivity extends Activity {
     public static final int CLEAR_DB = Menu.FIRST;
     public static final int NEW_PONY = 2;
 
+    static final int NEW_IMAGE = 1;
+
 //  View Variables
     private ListView list;
     private Activity activity = this;
@@ -114,67 +116,16 @@ public class MainActivity extends Activity {
     };
 
     public void new_picture(){
+        Intent intent = new Intent(getApplicationContext(), New_picture.class);
+        startActivity(intent);
+    }
 
-        Pictures repre = Aplication.getApplication().getRestAdapter().create(Pictures.class);
-        Pictures.Picture picture;
-        picture = new Pictures.Picture();
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == NEW_IMAGE && resultCode == RESULT_OK) {
 
-        picture.setTitle("Test");
-
-        Bitmap photo = BitmapFactory.decodeResource(getResources(), R.drawable.fluttershy);
-
-        File imageFileFolder = new File(getCacheDir(),"Avatar");
-        if( !imageFileFolder.exists() ){
-            imageFileFolder.mkdir();
+            activity.recreate();
         }
-
-        FileOutputStream out = null;
-
-        File imageFileName = new File(imageFileFolder, "avatar-" + System.currentTimeMillis() + ".jpg");
-        try {
-            out = new FileOutputStream(imageFileName);
-            photo.compress(Bitmap.CompressFormat.JPEG, 100, out);
-            out.flush();
-        } catch (IOException e) {
-            Log.e("TAG", "Failed to convert image to JPEG", e);
-        } finally {
-            try {
-                if (out != null) {
-                    out.close();
-                }
-            } catch (IOException e) {
-                Log.e("TAG", "Failed to close output stream", e);
-            }
-        }
-
-        TypedFile typedFile = new TypedFile("image/jpeg", imageFileName);
-
-        Callback<Pictures.Picture> callback;
-        callback = new Callback<Pictures.Picture>() {
-            @Override
-            public void success(Pictures.Picture picture, Response response) {
-                Toast.makeText(getApplicationContext(), picture.getTitle(),
-                        Toast.LENGTH_LONG).show();
-                Log.d("Si jalo: ", picture.getTitle());
-                try {
-                    pictureDao = Aplication.getApplication().getPictureeDao();
-                    pictureDao.create(picture);
-                    activity.recreate();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                Toast.makeText(getApplicationContext(), "FAIL!",
-                        Toast.LENGTH_LONG).show();
-            }
-        };
-
-
-       repre.createPicture(picture.getTitle(),typedFile,callback);
     }
 
     public void cleardatabase(){
@@ -196,7 +147,7 @@ public class MainActivity extends Activity {
 
             Pictures repre = Aplication.getApplication().getRestAdapter().create(Pictures.class);
             try {
-                pictureDao = Aplication.getApplication().getPictureeDao();
+                pictureDao = Aplication.getApplication().getPictureDao();
                 Log.d("The table exists: ", pictureDao.isTableExists() + "");
                 Log.d("The size is more than 0 : ", (pictureDao.queryForAll().size()) + "");
                 if(pictureDao.isTableExists() && pictureDao.queryForAll().size()>0) {

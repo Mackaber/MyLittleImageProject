@@ -47,7 +47,7 @@ public class Aplication extends Application {
         return this.restAdapter;
     }
 
-    public Dao<Pictures.Picture, Integer> getPictureeDao() throws SQLException {
+    public Dao<Pictures.Picture, Integer> getPictureDao() throws SQLException {
         if (picture == null) {
             picture = databaseHelper.getDao(Pictures.Picture.class);
         }
