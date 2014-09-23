@@ -22,6 +22,8 @@ import com.j256.ormlite.dao.Dao;
 import com.mli.mackaber.mylittleimageproject.Aplication;
 import com.mli.mackaber.mylittleimageproject.R;
 import com.mli.mackaber.mylittleimageproject.adapters.PicturesAdapter;
+import com.mli.mackaber.mylittleimageproject.models.AlbumRepository;
+import com.mli.mackaber.mylittleimageproject.models.Albums;
 import com.mli.mackaber.mylittleimageproject.models.PictureRepository;
 import com.mli.mackaber.mylittleimageproject.models.Pictures;
 
@@ -46,11 +48,13 @@ import retrofit.mime.TypedFile;
 public class MainActivity extends Activity {
 
 //  Object Variables
-    private PictureRepository repo;
+    private PictureRepository picuturerepo;
+    private AlbumRepository albumrepo;
     private List<Pictures.Picture> pictures;
 
 //  Database Variables
     private Dao<Pictures.Picture, Integer> pictureDao = null;
+    private Dao<Albums.Album, Integer> albumDao = null;
     public static final int CLEAR_DB = Menu.FIRST;
     public static final int NEW_PONY = 2;
 
@@ -61,6 +65,7 @@ public class MainActivity extends Activity {
     private Activity activity = this;
     private PicturesAdapter adapter;
     private List<Pictures.Picture> picturesToInsert = new ArrayList<Pictures.Picture>();
+    private List<Albums.Album> albumsToInsert = new ArrayList<Albums.Album>();
 
 //V----------------------------------------------- ACTIVITY METHODS ----------------------------------------------------------------V
 
@@ -72,7 +77,8 @@ public class MainActivity extends Activity {
         new DownloadNewsTask().execute();
         list = (ListView) findViewById(R.id.listView);
 
-        repo = new PictureRepository(Aplication.getApplication().getContext());
+        picuturerepo = new PictureRepository(Aplication.getApplication().getContext());
+        albumrepo = new AlbumRepository(Aplication.getApplication().getContext());
 
         list.setOnItemClickListener(itemClickHandler);
 
@@ -145,9 +151,12 @@ public class MainActivity extends Activity {
         @Override
         protected Void doInBackground(final Void... arg0) {
 
-            Pictures repre = Aplication.getApplication().getRestAdapter().create(Pictures.class);
+            Pictures picturesAdapter = Aplication.getApplication().getRestAdapter().create(Pictures.class);
+            Albums albumsAdapter = Aplication.getApplication().getRestAdapter().create(Albums.class);
             try {
                 pictureDao = Aplication.getApplication().getPictureDao();
+                albumDao = Aplication.getApplication().getAlbumDao();
+
                 Log.d("The table exists: ", pictureDao.isTableExists() + "");
                 Log.d("The size is more than 0 : ", (pictureDao.queryForAll().size()) + "");
                 if(pictureDao.isTableExists() && pictureDao.queryForAll().size()>0) {
@@ -156,20 +165,35 @@ public class MainActivity extends Activity {
                 } else {
 
                     Log.d("Using...", "Adapter");
-                    Log.d("Número de Articulos",repre.getAllPictures().size() + "");
+                    Log.d("Total Albums: ",albumsAdapter.getAllAlbums().size() + "");
+                    Log.d("Total Pictures: ",picturesAdapter.getAllPictures().size() + "");
 
-                    picturesToInsert = repre.getAllPictures();
-                    pictureDao.callBatchTasks(new Callable<Void>() {
+                    albumsToInsert = albumsAdapter.getAllAlbums();
+
+                    albumDao.callBatchTasks(new Callable<Void>() {
                         public Void call() throws Exception {
-                            for (Pictures.Picture picture: picturesToInsert) {
-                                Log.d("Artículo #" + picture.getId(), picture.getTitle());
-                                pictureDao.create(picture);
+                            for (Albums.Album album: albumsToInsert) {
+                                Log.d("Album #" + album.getId(), album.getTitle());
+                                albumDao.create(album);
                             }
                             return null;
                         }
                     });
 
-                    pictures = repre.getAllPictures();
+                    picturesToInsert = picturesAdapter.getAllPictures();
+
+                    pictureDao.callBatchTasks(new Callable<Void>() {
+                        public Void call() throws Exception {
+                            for (Pictures.Picture picture: picturesToInsert) {
+                                  picture.setAlbum(albumDao.queryForId(picture.getAlbum_id()));
+                                  Log.d("Picture #" + picture.getId(), picture.getTitle() + ", " +  picture.getDescription() + ", " + picture.getAlbum().getTitle() );
+                                  pictureDao.create(picture);
+                            }
+                            return null;
+                        }
+                    });
+
+                    pictures = picturesAdapter.getAllPictures();
                 }
             } catch (Exception e) {
                 e.printStackTrace();

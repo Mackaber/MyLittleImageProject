@@ -1,8 +1,11 @@
 package com.mli.mackaber.mylittleimageproject.models;
 
+import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
+import com.mli.mackaber.mylittleimageproject.Aplication;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import retrofit.Callback;
@@ -20,6 +23,7 @@ import retrofit.mime.TypedString;
  * Created by mackaber on 17/09/14.
  */
 public interface Pictures {
+
     @GET("/pictures")
     List<Picture> getAllPictures();
 
@@ -37,6 +41,14 @@ public interface Pictures {
         private String title;
         @DatabaseField
         private String url;
+        @DatabaseField
+        private String description;
+        @DatabaseField(foreign = true)
+        private Albums.Album album;
+
+        // Album ID only to get it from the API
+        private int album_id;
+
 
         public int getId(){ return id; }
         public void setId(int id){ this.id = id; }
@@ -47,5 +59,21 @@ public interface Pictures {
         public String getUrl(){ return url; }
         public void setUrl(String url){ this.url = url; }
 
+        public String getDescription() { return description; }
+        public void setDescription(String description){ this.description = description; }
+
+        public Albums.Album getAlbum() {
+            return album;
+        }
+        public void setAlbum(Albums.Album album) {
+            this.album = album;
+        }
+
+        public int getAlbum_id() {
+            return album_id;
+        }
+        public void setAlbum_id(int album_id) {
+            this.album_id = album_id;
+        }
     }
 }

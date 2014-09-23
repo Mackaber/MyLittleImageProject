@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.j256.ormlite.dao.Dao;
 import com.mli.mackaber.mylittleimageproject.Aplication;
 import com.mli.mackaber.mylittleimageproject.R;
+import com.mli.mackaber.mylittleimageproject.models.Albums;
 import com.mli.mackaber.mylittleimageproject.models.Pictures;
 import com.squareup.picasso.Picasso;
 
@@ -20,6 +21,7 @@ public class Picture_detail extends Activity {
 
     public static final String ARG_ITEM_ID = "Item_id";
     private Dao<Pictures.Picture, Integer> pictureDao = null;
+    private Dao<Albums.Album, Integer> albumDao = null;
     private Pictures.Picture picture;
     private int id;
 
@@ -35,15 +37,19 @@ public class Picture_detail extends Activity {
 
         TextView text = (TextView) findViewById(R.id.textView);
         ImageView image = (ImageView) findViewById(R.id.displayImage);
+        TextView albumtitle = (TextView) findViewById(R.id.albumtitle);
 
         try {
             pictureDao = Aplication.getApplication().getPictureDao();
-
+            albumDao = Aplication.getApplication().getAlbumDao();
             picture = pictureDao.queryForId(id);
+
+            albumDao.refresh(picture.getAlbum());
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
+        albumtitle.setText(picture.getAlbum().getTitle());
         text.setText(picture.getTitle());
         Picasso.with(Aplication.getApplication().getContext()).load(picture.getUrl()).resize(300, 300).into(image);
 

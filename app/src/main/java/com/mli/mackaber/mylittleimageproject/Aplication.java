@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.mli.mackaber.mylittleimageproject.databases.DatabaseOrm;
+import com.mli.mackaber.mylittleimageproject.models.Albums;
 import com.mli.mackaber.mylittleimageproject.models.PictureRepository;
 import com.mli.mackaber.mylittleimageproject.models.Pictures;
 
@@ -25,7 +26,10 @@ public class Aplication extends Application {
     private static Aplication instance;
     private SharedPreferences preferences;
     private DatabaseOrm databaseHelper = null;
+
     private Dao<Pictures.Picture, Integer> picture = null;
+    private Dao<Albums.Album, Integer> album = null;
+
     private RestAdapter restAdapter;
     private PictureRepository repo;
     public Aplication() { instance = this; }
@@ -54,6 +58,13 @@ public class Aplication extends Application {
         return picture;
     }
 
+    public Dao<Albums.Album, Integer> getAlbumDao() throws SQLException {
+        if (album == null) {
+            album = databaseHelper.getDao(Albums.Album.class);
+        }
+        return album;
+    }
+
     @Override
     public void onTerminate() {
         super.onTerminate();
@@ -64,7 +75,7 @@ public class Aplication extends Application {
     }
 
     public void cleanPictures() throws SQLException {
-        databaseHelper.cleanPictures();
+        databaseHelper.cleanAll();
     }
 
     public static Aplication getApplication() {

@@ -65,7 +65,6 @@ public class PicturesAdapter extends ArrayAdapter<String> {
         public TextView title;
         public TextView url;
         public ImageView imageUrl;
-
     }
 
 }
