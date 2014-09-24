@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.j256.ormlite.dao.Dao;
 import com.mli.mackaber.mylittleimageproject.Aplication;
 import com.mli.mackaber.mylittleimageproject.R;
+import com.mli.mackaber.mylittleimageproject.adapters.AlbumsAdapter;
 import com.mli.mackaber.mylittleimageproject.models.Albums;
 import com.mli.mackaber.mylittleimageproject.models.Pictures;
 
@@ -47,11 +48,14 @@ public class New_album extends Activity {
     static final int REQUEST_IMAGE_CAPTURE = 3;
     private TypedFile typedFile;
     private ImageView ivImage;
+    private AlbumsAdapter albumsAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_album);
+
+        albumsAdapter = Aplication.getApplication().getAlbumsAdapter();
 
         final Button confirm = (Button) findViewById(R.id.confirm_button);
         confirm.setOnClickListener(new View.OnClickListener() {
@@ -98,6 +102,9 @@ public class New_album extends Activity {
                 try {
                     albumDao = Aplication.getApplication().getAlbumDao();
                     albumDao.create(album);
+
+                    Albums.Album new_album = albumDao.queryForId(album.getId());
+                    albumsAdapter.addAlbum(new_album);
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }

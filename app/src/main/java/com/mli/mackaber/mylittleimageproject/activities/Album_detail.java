@@ -2,12 +2,15 @@ package com.mli.mackaber.mylittleimageproject.activities;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Picture;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.ForeignCollection;
@@ -20,6 +23,7 @@ import com.mli.mackaber.mylittleimageproject.models.Pictures;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /*
@@ -35,7 +39,6 @@ public class Album_detail extends Activity {
 //  View Variables
     private ListView list;
     private Activity activity = this;
-    private AlbumsAdapter albumsAdapter;
     private PicturesAdapter picturesAdapter;
     private int id;
     private Dao<Albums.Album, Integer> albumDao = null;
@@ -64,13 +67,14 @@ public class Album_detail extends Activity {
         }
 
         picturesAdapter = new PicturesAdapter(activity, R.layout.list_item, pictures);
-//        picturesAdapter = Aplication.getApplication().getPicturesAdapter();
+
+        Aplication.getApplication().setPicturesAdapter(picturesAdapter);
 
         list = (ListView) activity.findViewById(R.id.pictureListView);
         list.setAdapter(picturesAdapter);
         list.setOnItemClickListener(itemClickHandler);
+        list.deferNotifyDataSetChanged();
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -98,7 +102,6 @@ public class Album_detail extends Activity {
 
     private AdapterView.OnItemClickListener itemClickHandler = new AdapterView.OnItemClickListener() {
         public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-            picturesAdapter = Aplication.getApplication().getPicturesAdapter();
             Intent intent = new Intent(getApplicationContext(), Picture_detail.class);
 
             intent.putExtra(Picture_detail.ARG_ITEM_ID, picturesAdapter.getPictureAt(position).getId());
@@ -108,13 +111,7 @@ public class Album_detail extends Activity {
 
     public void new_picture(){
         Intent intent = new Intent(getApplicationContext(), New_picture.class);
+        intent.putExtra(New_picture.ALBUM_ID, id);
         startActivity(intent);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == NEW_IMAGE && resultCode == RESULT_OK) {
-            activity.recreate();
-        }
     }
 }

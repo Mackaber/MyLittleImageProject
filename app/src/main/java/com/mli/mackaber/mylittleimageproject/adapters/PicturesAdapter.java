@@ -51,13 +51,28 @@ public class PicturesAdapter extends ArrayAdapter<String> {
         convertView.setTag(holder);
 
         Pictures.Picture picture = pictures.get(position);
-
-        Log.d("ID del adapter:", position + "");
-
         holder.title.setText(picture.getTitle());
         Picasso.with(Aplication.getApplication().getContext()).load(picture.getUrl()).resize(90, 90).into(holder.imageUrl);
 
         return convertView;
+    }
+
+    // Add a single Picture
+    public void addPicture(Pictures.Picture picture){
+        this.pictures.add(picture);
+        this.notifyDataSetChanged();
+    }
+
+    // Add a picture collection
+    public void addPictures(List<Pictures.Picture> pictures){
+        this.pictures.addAll(pictures);
+        this.notifyDataSetChanged();
+    }
+
+    // Change the current picture collection with another
+    public void changePictures(List<Pictures.Picture> pictures){
+        this.pictures = pictures;
+        this.notifyDataSetChanged();
     }
 
     private static class PicturesHolder {

@@ -52,8 +52,6 @@ public class AlbumsAdapter extends ArrayAdapter<String> {
 
         Albums.Album album = albums.get(position);
 
-        Log.d("ID del adapter:", position + "");
-
         holder.title.setText(album.getTitle());
 
         String url;
@@ -64,6 +62,24 @@ public class AlbumsAdapter extends ArrayAdapter<String> {
         Picasso.with(Aplication.getApplication().getContext()).load(url).resize(90, 90).into(holder.imageUrl);
 
         return convertView;
+    }
+
+    // Add a single Album
+    public void addAlbum(Albums.Album album){
+        this.albums.add(album);
+        this.notifyDataSetChanged();
+    }
+
+    // Add a album collection
+    public void addAlbums(List<Albums.Album> albums){
+        this.albums.addAll(albums);
+        this.notifyDataSetChanged();
+    }
+
+    // Change the current album collection with another
+    public void changeAlbums(List<Albums.Album> albums){
+        this.albums = albums;
+        this.notifyDataSetChanged();
     }
 
     private static class AlbumsHolder {

@@ -28,7 +28,7 @@ public interface Pictures {
 
     @Multipart
     @POST("/pictures")
-    void createPicture(@Part("title")String title, @Part("image")TypedFile photo, Callback<Picture> cb);
+    void createPicture(@Part("title")String title, @Part("album_id")int album_id, @Part("image")TypedFile photo, Callback<Picture> cb);
 //    void createPicture(@Body Picture picture, Callback<Picture> cb);
 //    void createPicture(@Part("picture") Picture picture, Callback<Picture> cb);
 
