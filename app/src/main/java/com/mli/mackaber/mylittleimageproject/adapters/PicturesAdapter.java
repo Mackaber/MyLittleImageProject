@@ -3,7 +3,6 @@ package com.mli.mackaber.mylittleimageproject.adapters;
 import android.app.Activity;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.app.Activity;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;

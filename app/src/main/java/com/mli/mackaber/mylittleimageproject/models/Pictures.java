@@ -17,7 +17,6 @@ import retrofit.http.POST;
 import retrofit.http.Part;
 import retrofit.http.Path;
 import retrofit.mime.TypedFile;
-import retrofit.mime.TypedString;
 
 /**
  * Created by mackaber on 17/09/14.

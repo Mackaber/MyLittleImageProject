@@ -6,9 +6,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.mli.mackaber.mylittleimageproject.adapters.PicturesAdapter;
 import com.mli.mackaber.mylittleimageproject.databases.DatabaseOrm;
 import com.mli.mackaber.mylittleimageproject.models.Albums;
-import com.mli.mackaber.mylittleimageproject.models.PictureRepository;
 import com.mli.mackaber.mylittleimageproject.models.Pictures;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
@@ -31,7 +31,8 @@ public class Aplication extends Application {
     private Dao<Albums.Album, Integer> album = null;
 
     private RestAdapter restAdapter;
-    private PictureRepository repo;
+    private PicturesAdapter picturesAdapter;
+
     public Aplication() { instance = this; }
 
     @Override
@@ -49,6 +50,13 @@ public class Aplication extends Application {
     public Context getContext(){ return this; }
     public RestAdapter getRestAdapter() {
         return this.restAdapter;
+    }
+
+    public PicturesAdapter getPicturesAdapter() {
+        return picturesAdapter;
+    }
+    public void setPicturesAdapter(PicturesAdapter picturesAdapter) {
+        this.picturesAdapter = picturesAdapter;
     }
 
     public Dao<Pictures.Picture, Integer> getPictureDao() throws SQLException {
