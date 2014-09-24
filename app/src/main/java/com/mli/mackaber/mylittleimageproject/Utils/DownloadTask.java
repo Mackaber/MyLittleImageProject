@@ -10,11 +10,14 @@ import android.widget.Toast;
 import com.j256.ormlite.dao.Dao;
 import com.mli.mackaber.mylittleimageproject.Aplication;
 import com.mli.mackaber.mylittleimageproject.R;
+import com.mli.mackaber.mylittleimageproject.adapters.AlbumsAdapter;
 import com.mli.mackaber.mylittleimageproject.adapters.PicturesAdapter;
 import com.mli.mackaber.mylittleimageproject.models.Albums;
 import com.mli.mackaber.mylittleimageproject.models.Pictures;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -28,11 +31,14 @@ public class DownloadTask extends AsyncTask<Void, Void, Void> {
     private Dao<Pictures.Picture, Integer> pictureDao = null;
     private Dao<Albums.Album, Integer> albumDao = null;
     private List<Pictures.Picture> pictures;
+    private List<Albums.Album> albums;
 
     private List<Pictures.Picture> picturesToInsert = new ArrayList<Pictures.Picture>();
     private List<Albums.Album> albumsToInsert = new ArrayList<Albums.Album>();
 
-    private PicturesAdapter adapter;
+    private AlbumsAdapter albumsAdapter;
+    private PicturesAdapter picturesAdapter;
+
     private Activity activity;
     private AdapterView.OnItemClickListener handler;
 
@@ -55,6 +61,7 @@ public class DownloadTask extends AsyncTask<Void, Void, Void> {
             if(pictureDao.isTableExists() && pictureDao.queryForAll().size()>0) {
                 Log.d("Using...", "DB");
                 pictures = pictureDao.queryForAll();
+                albums = albumDao.queryForAll();
             } else {
 
                 Log.d("Using...", "Adapter");
@@ -86,6 +93,7 @@ public class DownloadTask extends AsyncTask<Void, Void, Void> {
                     }
                 });
 
+                albums = albumsAdapter.getAllAlbums();
                 pictures = picturesAdapter.getAllPictures();
             }
         } catch (Exception e) {
@@ -97,14 +105,21 @@ public class DownloadTask extends AsyncTask<Void, Void, Void> {
 
     @Override
     public void onPostExecute(Void result) {
-        adapter = new PicturesAdapter(activity, R.layout.list_item, pictures);
+        albumsAdapter = new AlbumsAdapter(activity,R.layout.list_item, albums);
 
-        list = (ListView) activity.findViewById(R.id.listView);
-        list.setAdapter(adapter);
+        list = (ListView) activity.findViewById(R.id.albumListView);
+        list.setAdapter(albumsAdapter);
         list.setOnItemClickListener(handler);
 
-        Aplication.getApplication().setPicturesAdapter(adapter);
+        Aplication.getApplication().setAlbumsAdapter(albumsAdapter);
 
         Toast.makeText(Aplication.getApplication().getContext(),"DONE!",Toast.LENGTH_LONG).show();
+
+//        try {
+//            Albums.Album test = albumDao.queryForId(1);
+//            Log.d("TESTING... ",test.getPictures().iterator().next().getTitle());
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
     }
 }
