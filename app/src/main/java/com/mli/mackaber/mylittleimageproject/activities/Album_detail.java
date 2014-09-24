@@ -9,10 +9,18 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.ForeignCollection;
 import com.mli.mackaber.mylittleimageproject.Aplication;
 import com.mli.mackaber.mylittleimageproject.R;
 import com.mli.mackaber.mylittleimageproject.adapters.AlbumsAdapter;
 import com.mli.mackaber.mylittleimageproject.adapters.PicturesAdapter;
+import com.mli.mackaber.mylittleimageproject.models.Albums;
+import com.mli.mackaber.mylittleimageproject.models.Pictures;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /*
     This is the List Activity Class
@@ -29,6 +37,10 @@ public class Album_detail extends Activity {
     private Activity activity = this;
     private AlbumsAdapter albumsAdapter;
     private PicturesAdapter picturesAdapter;
+    private int id;
+    private Dao<Albums.Album, Integer> albumDao = null;
+    private List<Pictures.Picture> pictures;
+
 
 //V----------------------------------------------- ACTIVITY METHODS ----------------------------------------------------------------V
 
@@ -37,7 +49,22 @@ public class Album_detail extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_album_detail);
 
-        picturesAdapter = Aplication.getApplication().getPicturesAdapter();
+        Bundle extras = getIntent().getExtras();
+        id = extras.getInt(ARG_ITEM_ID);
+
+        Albums.Album album = null;
+
+        try {
+            albumDao = Aplication.getApplication().getAlbumDao();
+            album = albumDao.queryForId(id);
+            pictures = new ArrayList<Pictures.Picture>(album.getPictures());
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        picturesAdapter = new PicturesAdapter(activity, R.layout.list_item, pictures);
+//        picturesAdapter = Aplication.getApplication().getPicturesAdapter();
 
         list = (ListView) activity.findViewById(R.id.pictureListView);
         list.setAdapter(picturesAdapter);
