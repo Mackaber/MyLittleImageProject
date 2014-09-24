@@ -7,7 +7,13 @@
     <string name="server">http://192.168.0.11:3000/</string>
     <string name="clear_database">Clear Database</string>
     <string name="new_pony">New Picture</string>
+    <string name="new_album">New Album</string>
+
+    <string name="title_activity_album_activity">Albums</string>
+    <string name="title_activity_picture_activity">Pictures</string>
+    <string name="title_activity_album_detail">Album Detail</string>
     <string name="title_activity_picture_detail">Picture Detail</string>
-    <string name="title_activity_new__picture">new_Picture</string>
+    <string name="title_activity_new_album">New Album</string>
+    <string name="title_activity_new_picture">New Picture</string>
 
 </resources>

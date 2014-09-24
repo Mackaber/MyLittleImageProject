@@ -1,4 +1,4 @@
-package com.mli.mackaber.mylittleimageproject.models;
+package com.mli.mackaber.mylittleimageproject.databases;
 
 import android.content.Context;
 

@@ -3,43 +3,33 @@ package com.mli.mackaber.mylittleimageproject.activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ListView;
 
 import com.mli.mackaber.mylittleimageproject.Aplication;
 import com.mli.mackaber.mylittleimageproject.R;
+import com.mli.mackaber.mylittleimageproject.adapters.AlbumsAdapter;
 import com.mli.mackaber.mylittleimageproject.adapters.PicturesAdapter;
-import com.mli.mackaber.mylittleimageproject.utils.*;
+import com.mli.mackaber.mylittleimageproject.models.Albums;
+import com.mli.mackaber.mylittleimageproject.utils.DownloadTask;
 
 import java.sql.SQLException;
 
-/*
-    This is the List Activity Class
-*/
+public class Album_activity extends Activity {
 
-public class MainActivity extends Activity {
-
-//  Database Variables
+    //  Database Variables
     public static final int CLEAR_DB = Menu.FIRST;
-    public static final int NEW_PONY = 2;
-    static final int NEW_IMAGE = 1;
+    public static final int NEW_ALBUM = 2;
 
-//  View Variables
-    private ListView list;
-    private Activity activity = this;
-    private PicturesAdapter picturesAdapter;
-
-//V----------------------------------------------- ACTIVITY METHODS ----------------------------------------------------------------V
+    private AlbumsAdapter albumsAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_album_activity);
 
-        setContentView(R.layout.activity_main_activity);
         new DownloadTask(this,itemClickHandler).execute();
     }
 
@@ -47,9 +37,9 @@ public class MainActivity extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main_activity, menu);
+        getMenuInflater().inflate(R.menu.album_activity, menu);
         menu.add(0,CLEAR_DB,0,R.string.clear_database);
-        menu.add(1,NEW_PONY,1,R.string.new_pony);
+        menu.add(1,NEW_ALBUM,1,R.string.new_album);
         return true;
     }
 
@@ -63,45 +53,34 @@ public class MainActivity extends Activity {
             case CLEAR_DB:
                 cleardatabase();
                 return true;
-            case NEW_PONY:
-                new_picture();
+            case NEW_ALBUM:
+                new_album();
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
-//V----------------------------------------------- CUSTOM METHODS ----------------------------------------------------------------V
-
     private AdapterView.OnItemClickListener itemClickHandler = new AdapterView.OnItemClickListener() {
         public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-            picturesAdapter = Aplication.getApplication().getPicturesAdapter();
+            albumsAdapter = Aplication.getApplication().getAlbumsAdapter();
 
-            Intent intent = new Intent(getApplicationContext(), Picture_detail.class);
-            intent.putExtra(Picture_detail.ARG_ITEM_ID, picturesAdapter.getPictureAt(position).getId());
+            Intent intent = new Intent(getApplicationContext(), Album_detail.class);
+            intent.putExtra(Album_detail.ARG_ITEM_ID, albumsAdapter.getAlbumAt(position).getId());
             startActivity(intent);
         }
     };
 
-    public void new_picture(){
-        Intent intent = new Intent(getApplicationContext(), New_picture.class);
+    public void new_album(){
+        Intent intent = new Intent(getApplicationContext(), New_album.class);
         startActivity(intent);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == NEW_IMAGE && resultCode == RESULT_OK) {
-
-            activity.recreate();
-        }
     }
 
     public void cleardatabase(){
         try {
             Aplication.getApplication().cleanPictures();
-            activity.recreate();
+            this.recreate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
-
 }
