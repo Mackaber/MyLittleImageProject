@@ -10,6 +10,7 @@ import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
+import com.mli.mackaber.mylittleimageproject.models.Videos;
 
 import java.sql.SQLException;
 
@@ -27,7 +28,7 @@ import java.sql.SQLException;
 public class DatabaseOrm extends OrmLiteSqliteOpenHelper {
 
     private static final String DATABASE_NAME = "ponies";
-    private static final int DATABASE_VERSION = 10;
+    private static final int DATABASE_VERSION = 11;
     private SQLiteDatabase db;
 
     // the DAO object we use to access the SimpleData table
@@ -47,6 +48,7 @@ public class DatabaseOrm extends OrmLiteSqliteOpenHelper {
 
             TableUtils.createTable(connectionSource, Albums.Album.class);
             TableUtils.createTable(connectionSource, Pictures.Picture.class);
+            TableUtils.createTable(connectionSource, Videos.Video.class);
 
         } catch (SQLException e) {
             Log.e(DatabaseOrm.class.getName(), "Can't create database", e);
@@ -61,6 +63,7 @@ public class DatabaseOrm extends OrmLiteSqliteOpenHelper {
 
             TableUtils.dropTable(connectionSource, Albums.Album.class, true);
             TableUtils.dropTable(connectionSource, Pictures.Picture.class, true);
+            TableUtils.dropTable(connectionSource, Videos.Video.class, true);
 
             onCreate(db, connectionSource);
         } catch (SQLException e) {
@@ -94,6 +97,7 @@ public class DatabaseOrm extends OrmLiteSqliteOpenHelper {
 
     public void cleanAll() throws SQLException {
         TableUtils.clearTable(getConnectionSource(), Pictures.Picture.class);
+        TableUtils.clearTable(getConnectionSource(), Videos.Video.class);
         TableUtils.clearTable(getConnectionSource(), Albums.Album.class);
     }
 

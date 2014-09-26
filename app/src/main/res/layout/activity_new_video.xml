@@ -45,11 +45,4 @@
         android:layout_centerHorizontal="true"
         android:id="@+id/videoPreview" />
 
-    <MediaController
-        android:layout_width="200dp"
-        android:layout_height="50dp"
-        android:id="@+id/mediaController"
-        android:layout_below="@+id/videoPreview"
-        android:layout_alignEnd="@+id/videoPreview" />
-
 </RelativeLayout>

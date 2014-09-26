@@ -12,8 +12,10 @@ import com.mli.mackaber.mylittleimageproject.Aplication;
 import com.mli.mackaber.mylittleimageproject.R;
 import com.mli.mackaber.mylittleimageproject.adapters.AlbumsAdapter;
 import com.mli.mackaber.mylittleimageproject.adapters.PicturesAdapter;
+import com.mli.mackaber.mylittleimageproject.adapters.VideosAdapter;
 import com.mli.mackaber.mylittleimageproject.models.Albums;
 import com.mli.mackaber.mylittleimageproject.models.Pictures;
+import com.mli.mackaber.mylittleimageproject.models.Videos;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -30,14 +32,19 @@ public class DownloadTask extends AsyncTask<Void, Void, Void> {
 
     private Dao<Pictures.Picture, Integer> pictureDao = null;
     private Dao<Albums.Album, Integer> albumDao = null;
-    private List<Pictures.Picture> pictures;
+    private Dao<Videos.Video, Integer> videoDao = null;
     private List<Albums.Album> albums;
+    private List<Pictures.Picture> pictures;
+    private List<Videos.Video> videos;
 
-    private List<Pictures.Picture> picturesToInsert = new ArrayList<Pictures.Picture>();
+
     private List<Albums.Album> albumsToInsert = new ArrayList<Albums.Album>();
+    private List<Pictures.Picture> picturesToInsert = new ArrayList<Pictures.Picture>();
+    private List<Videos.Video> videosToInsert = new ArrayList<Videos.Video>();
 
     private AlbumsAdapter albumsAdapter;
     private PicturesAdapter picturesAdapter;
+    private VideosAdapter videosAdapter;
 
     private Activity activity;
     private AdapterView.OnItemClickListener handler;
@@ -50,11 +57,13 @@ public class DownloadTask extends AsyncTask<Void, Void, Void> {
     @Override
     protected Void doInBackground(final Void... arg0) {
 
-        Pictures picturesAdapter = Aplication.getApplication().getRestAdapter().create(Pictures.class);
         Albums albumsAdapter = Aplication.getApplication().getRestAdapter().create(Albums.class);
+        Pictures picturesAdapter = Aplication.getApplication().getRestAdapter().create(Pictures.class);
+        Videos videosAdapter = Aplication.getApplication().getRestAdapter().create(Videos.class);
         try {
-            pictureDao = Aplication.getApplication().getPictureDao();
             albumDao = Aplication.getApplication().getAlbumDao();
+            pictureDao = Aplication.getApplication().getPictureDao();
+            videoDao = Aplication.getApplication().getVideoeDao();
 
             Log.d("The table exists: ", pictureDao.isTableExists() + "");
             Log.d("The size is more than 0 : ", (pictureDao.queryForAll().size()) + "");
@@ -62,6 +71,7 @@ public class DownloadTask extends AsyncTask<Void, Void, Void> {
                 Log.d("Using...", "DB");
                 pictures = pictureDao.queryForAll();
                 albums = albumDao.queryForAll();
+                videos = videoDao.queryForAll();
             } else {
 
                 Log.d("Using...", "Adapter");
@@ -93,8 +103,22 @@ public class DownloadTask extends AsyncTask<Void, Void, Void> {
                     }
                 });
 
+                videosToInsert = videosAdapter.getAllVideos();
+
+                videoDao.callBatchTasks(new Callable<Void>() {
+                    public Void call() throws Exception {
+                        for (Videos.Video video: videosToInsert) {
+                            video.setAlbum(albumDao.queryForId(video.getAlbum_id()));
+                            Log.d("Video #" + video.getId(), video.getTitle() + ", " +  video.getDescription() + ", " + video.getAlbum().getTitle() );
+                            videoDao.create(video);
+                        }
+                        return null;
+                    }
+                });
+
                 pictures = pictureDao.queryForAll();
                 albums = albumDao.queryForAll();
+                videos = videoDao.queryForAll();
             }
         } catch (Exception e) {
             e.printStackTrace();

@@ -17,9 +17,11 @@ import com.j256.ormlite.dao.ForeignCollection;
 import com.mli.mackaber.mylittleimageproject.Aplication;
 import com.mli.mackaber.mylittleimageproject.R;
 import com.mli.mackaber.mylittleimageproject.adapters.AlbumsAdapter;
+import com.mli.mackaber.mylittleimageproject.adapters.ListAdapter;
 import com.mli.mackaber.mylittleimageproject.adapters.PicturesAdapter;
 import com.mli.mackaber.mylittleimageproject.models.Albums;
 import com.mli.mackaber.mylittleimageproject.models.Pictures;
+import com.mli.mackaber.mylittleimageproject.models.Videos;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -41,10 +43,12 @@ public class Album_detail extends Activity {
     private ListView list;
     private Activity activity = this;
     private PicturesAdapter picturesAdapter;
+    private ListAdapter listadapter;
     private int id;
     private Dao<Albums.Album, Integer> albumDao = null;
-    private List<Pictures.Picture> pictures;
-
+    private List<Object> pictures;
+    private List<Object> videos;
+    private List<Object> items;
 
 //V----------------------------------------------- ACTIVITY METHODS ----------------------------------------------------------------V
 
@@ -61,18 +65,23 @@ public class Album_detail extends Activity {
         try {
             albumDao = Aplication.getApplication().getAlbumDao();
             album = albumDao.queryForId(id);
-            pictures = new ArrayList<Pictures.Picture>(album.getPictures());
 
+            items = new ArrayList<Object>(album.getVideos());
+            pictures = new ArrayList<Object>(album.getPictures());
+
+            items.addAll(pictures);
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        picturesAdapter = new PicturesAdapter(activity, R.layout.list_item, pictures);
 
-        Aplication.getApplication().setPicturesAdapter(picturesAdapter);
+        listadapter = new ListAdapter(activity, R.layout.list_item, items);
+
+        Aplication.getApplication().setListAdapter(listadapter);
 
         list = (ListView) activity.findViewById(R.id.pictureListView);
-        list.setAdapter(picturesAdapter);
+        list.setAdapter(listadapter);
+
         list.setOnItemClickListener(itemClickHandler);
     }
 
@@ -106,10 +115,17 @@ public class Album_detail extends Activity {
 
     private AdapterView.OnItemClickListener itemClickHandler = new AdapterView.OnItemClickListener() {
         public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-            Intent intent = new Intent(getApplicationContext(), Picture_detail.class);
-
-            intent.putExtra(Picture_detail.ARG_ITEM_ID, picturesAdapter.getPictureAt(position).getId());
-            startActivity(intent);
+            if(items.get(position).getClass().equals(Pictures.Picture.class)){
+                Intent intent = new Intent(getApplicationContext(), Picture_detail.class);
+                Pictures.Picture picture = (Pictures.Picture) listadapter.getItemAt(position);
+                intent.putExtra(Picture_detail.ARG_ITEM_ID, picture.getId());
+                startActivity(intent);
+            } else {
+                Intent intent = new Intent(getApplicationContext(), Video_detail.class);
+                Videos.Video video = (Videos.Video) listadapter.getItemAt(position);
+                intent.putExtra(Video_detail.ARG_ITEM_ID, video.getId());
+                startActivity(intent);
+            }
         }
     };
 

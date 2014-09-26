@@ -7,13 +7,16 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.mli.mackaber.mylittleimageproject.adapters.AlbumsAdapter;
+import com.mli.mackaber.mylittleimageproject.adapters.ListAdapter;
 import com.mli.mackaber.mylittleimageproject.adapters.PicturesAdapter;
+import com.mli.mackaber.mylittleimageproject.adapters.VideosAdapter;
 import com.mli.mackaber.mylittleimageproject.databases.DatabaseOrm;
 import com.mli.mackaber.mylittleimageproject.models.Albums;
 import com.mli.mackaber.mylittleimageproject.models.Pictures;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
+import com.mli.mackaber.mylittleimageproject.models.Videos;
 
 import java.sql.SQLException;
 
@@ -28,12 +31,16 @@ public class Aplication extends Application {
     private SharedPreferences preferences;
     private DatabaseOrm databaseHelper = null;
 
-    private Dao<Pictures.Picture, Integer> picture = null;
     private Dao<Albums.Album, Integer> album = null;
+    private Dao<Pictures.Picture, Integer> picture = null;
+    private Dao<Videos.Video, Integer> video = null;
 
     private RestAdapter restAdapter;
     private PicturesAdapter picturesAdapter;
     private AlbumsAdapter albumsAdapter;
+    private VideosAdapter videosAdapter;
+    private ListAdapter listAdapter;
+
 
     public Aplication() { instance = this; }
 
@@ -55,6 +62,14 @@ public class Aplication extends Application {
         return this.restAdapter;
     }
 
+    public AlbumsAdapter getAlbumsAdapter() {
+        return albumsAdapter;
+    }
+
+    public void setAlbumsAdapter(AlbumsAdapter albumsAdapter) {
+        this.albumsAdapter = albumsAdapter;
+    }
+
     public PicturesAdapter getPicturesAdapter() {
         return picturesAdapter;
     }
@@ -62,12 +77,26 @@ public class Aplication extends Application {
         this.picturesAdapter = picturesAdapter;
     }
 
-    public AlbumsAdapter getAlbumsAdapter() {
-        return albumsAdapter;
+    public VideosAdapter getVideosAdapter() {
+        return videosAdapter;
+    }
+    public void setVideosAdapter(VideosAdapter videosAdapter) {
+        this.videosAdapter = videosAdapter;
     }
 
-    public void setAlbumsAdapter(AlbumsAdapter albumsAdapter) {
-        this.albumsAdapter = albumsAdapter;
+
+    public ListAdapter getListAdapter() {
+        return listAdapter;
+    }
+    public void setListAdapter(ListAdapter listAdapter) {
+        this.listAdapter = listAdapter;
+    }
+
+    public Dao<Albums.Album, Integer> getAlbumDao() throws SQLException {
+        if (album == null) {
+            album = databaseHelper.getDao(Albums.Album.class);
+        }
+        return album;
     }
 
     public Dao<Pictures.Picture, Integer> getPictureDao() throws SQLException {
@@ -77,11 +106,11 @@ public class Aplication extends Application {
         return picture;
     }
 
-    public Dao<Albums.Album, Integer> getAlbumDao() throws SQLException {
-        if (album == null) {
-            album = databaseHelper.getDao(Albums.Album.class);
+    public Dao<Videos.Video, Integer> getVideoeDao() throws SQLException {
+        if (video == null) {
+            video = databaseHelper.getDao(Videos.Video.class);
         }
-        return album;
+        return video;
     }
 
     @Override

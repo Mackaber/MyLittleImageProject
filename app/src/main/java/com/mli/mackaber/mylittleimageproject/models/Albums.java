@@ -35,6 +35,8 @@ public interface Albums {
         private String title;
         @ForeignCollectionField
         ForeignCollection<Pictures.Picture> pictures;
+        @ForeignCollectionField
+        ForeignCollection<Videos.Video> videos;
 
         public int getId() { return id; }
         public void setId(int id) { this.id = id; }
@@ -51,6 +53,13 @@ public interface Albums {
         }
         public void setPictures(ForeignCollection<Pictures.Picture> pictures) {
             this.pictures = pictures;
+        }
+
+        public ForeignCollection<Videos.Video> getVideos() {
+            return videos;
+        }
+        public void setVideos(ForeignCollection<Videos.Video> videos) {
+            this.videos = videos;
         }
     }
 }

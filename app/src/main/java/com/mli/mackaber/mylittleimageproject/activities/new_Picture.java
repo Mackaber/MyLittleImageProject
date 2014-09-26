@@ -24,6 +24,7 @@ import com.j256.ormlite.dao.Dao;
 import com.mli.mackaber.mylittleimageproject.Aplication;
 import com.mli.mackaber.mylittleimageproject.R;
 import com.mli.mackaber.mylittleimageproject.adapters.AlbumsAdapter;
+import com.mli.mackaber.mylittleimageproject.adapters.ListAdapter;
 import com.mli.mackaber.mylittleimageproject.adapters.PicturesAdapter;
 import com.mli.mackaber.mylittleimageproject.models.Albums;
 import com.mli.mackaber.mylittleimageproject.models.Pictures;
@@ -45,7 +46,7 @@ public class New_picture extends Activity {
     private Dao<Pictures.Picture, Integer> pictureDao = null;
     private Dao<Albums.Album, Integer> albumDao = null;
 
-    private PicturesAdapter picturesAdapter;
+    private ListAdapter listAdapter;
 
     private EditText mTitleText;
     public static final String ALBUM_ID = "Album_id";
@@ -66,7 +67,7 @@ public class New_picture extends Activity {
 
         ivImage = (ImageView) findViewById(R.id.imagePreview);
 
-        picturesAdapter = Aplication.getApplication().getPicturesAdapter();
+        listAdapter = Aplication.getApplication().getListAdapter();
 
         final Button confirm = (Button) findViewById(R.id.confirm_button);
         confirm.setOnClickListener(new View.OnClickListener() {
@@ -228,9 +229,7 @@ public class New_picture extends Activity {
                     pictureDao.create(picture);
 
                     Pictures.Picture new_picture = pictureDao.queryForId(picture.getId());
-                    picturesAdapter.addPicture(new_picture);
-
-
+                    listAdapter.addItem(new_picture);
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }

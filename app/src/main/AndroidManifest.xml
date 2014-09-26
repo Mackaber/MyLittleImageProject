@@ -45,6 +45,10 @@
             android:name=".activities.New_video"
             android:label="@string/title_activity_new__video" >
         </activity>
+        <activity
+            android:name=".activities.Video_detail"
+            android:label="@string/title_activity_video_detail" >
+        </activity>
     </application>
 
 </manifest>
