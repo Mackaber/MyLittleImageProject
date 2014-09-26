@@ -1,0 +1,55 @@
+<RelativeLayout
+    tools:context="com.mli.mackaber.mylittleimageproject.activities.New_video"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:id="@+id/relativeLayout">
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="CONFIRMAR"
+        android:id="@+id/confirm_button"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="69dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TOMAR VIDEO"
+        android:id="@+id/take_video"
+        android:layout_above="@+id/confirm_button"
+        android:layout_alignStart="@+id/confirm_button"
+        android:gravity="center_horizontal" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/video_title"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true"
+        android:hint="Video Title" />
+
+
+    <VideoView
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_marginTop="62dp"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/videoPreview" />
+
+    <MediaController
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:id="@+id/mediaController"
+        android:layout_below="@+id/videoPreview"
+        android:layout_alignEnd="@+id/videoPreview" />
+
+</RelativeLayout>

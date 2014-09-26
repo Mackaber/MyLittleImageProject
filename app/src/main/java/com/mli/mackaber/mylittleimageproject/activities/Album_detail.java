@@ -32,8 +32,9 @@ import java.util.List;
 
 public class Album_detail extends Activity {
 
-//  Database Variables
+//  Bundle Variables
     public static final int NEW_IMAGE = Menu.FIRST;
+    public static final int NEW_VIDEO = 2;
     public static final String ARG_ITEM_ID = "Item_id";
 
 //  View Variables
@@ -73,14 +74,14 @@ public class Album_detail extends Activity {
         list = (ListView) activity.findViewById(R.id.pictureListView);
         list.setAdapter(picturesAdapter);
         list.setOnItemClickListener(itemClickHandler);
-        list.deferNotifyDataSetChanged();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.album_detail, menu);
-        menu.add(1,NEW_IMAGE,1,R.string.new_pony);
+        menu.add(1,NEW_IMAGE,1,R.string.new_picture);
+        menu.add(2,NEW_VIDEO,2,R.string.new_video);
         return true;
     }
 
@@ -93,6 +94,9 @@ public class Album_detail extends Activity {
         switch(id) {
             case NEW_IMAGE:
                 new_picture();
+                return true;
+            case NEW_VIDEO:
+                new_video();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -112,6 +116,12 @@ public class Album_detail extends Activity {
     public void new_picture(){
         Intent intent = new Intent(getApplicationContext(), New_picture.class);
         intent.putExtra(New_picture.ALBUM_ID, id);
+        startActivity(intent);
+    }
+
+    public void new_video(){
+        Intent intent = new Intent(getApplicationContext(), New_video.class);
+        intent.putExtra(New_video.ALBUM_ID, id);
         startActivity(intent);
     }
 }

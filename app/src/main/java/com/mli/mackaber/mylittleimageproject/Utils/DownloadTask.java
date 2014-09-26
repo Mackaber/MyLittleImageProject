@@ -93,8 +93,8 @@ public class DownloadTask extends AsyncTask<Void, Void, Void> {
                     }
                 });
 
-                albums = albumsAdapter.getAllAlbums();
-                pictures = picturesAdapter.getAllPictures();
+                pictures = pictureDao.queryForAll();
+                albums = albumDao.queryForAll();
             }
         } catch (Exception e) {
             e.printStackTrace();

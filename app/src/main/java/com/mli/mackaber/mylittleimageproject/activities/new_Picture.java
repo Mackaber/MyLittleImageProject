@@ -23,6 +23,9 @@ import android.widget.Toast;
 import com.j256.ormlite.dao.Dao;
 import com.mli.mackaber.mylittleimageproject.Aplication;
 import com.mli.mackaber.mylittleimageproject.R;
+import com.mli.mackaber.mylittleimageproject.adapters.AlbumsAdapter;
+import com.mli.mackaber.mylittleimageproject.adapters.PicturesAdapter;
+import com.mli.mackaber.mylittleimageproject.models.Albums;
 import com.mli.mackaber.mylittleimageproject.models.Pictures;
 
 import java.io.File;
@@ -40,19 +43,30 @@ import retrofit.mime.TypedFile;
 public class New_picture extends Activity {
 
     private Dao<Pictures.Picture, Integer> pictureDao = null;
+    private Dao<Albums.Album, Integer> albumDao = null;
+
+    private PicturesAdapter picturesAdapter;
+
     private EditText mTitleText;
+    public static final String ALBUM_ID = "Album_id";
     static final int REQUEST_CAMERA = 1;
     static final int SELECT_FILE = 2;
     static final int REQUEST_IMAGE_CAPTURE = 3;
     private TypedFile typedFile;
     private ImageView ivImage;
+    private int albumid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_picture);
 
+        Bundle extras = getIntent().getExtras();
+        albumid = extras.getInt(ALBUM_ID);
+
         ivImage = (ImageView) findViewById(R.id.imagePreview);
+
+        picturesAdapter = Aplication.getApplication().getPicturesAdapter();
 
         final Button confirm = (Button) findViewById(R.id.confirm_button);
         confirm.setOnClickListener(new View.OnClickListener() {
@@ -65,7 +79,6 @@ public class New_picture extends Activity {
         take_picture.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 selectImage();
-//                dispatchTakePictureIntent();
             }
         });
     }
@@ -191,25 +204,14 @@ public class New_picture extends Activity {
         return true;
     }
 
-    private void dispatchTakePictureIntent() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-        }
-    }
-
-    public void confirm() {
+    private void confirm() {
         Pictures repre = Aplication.getApplication().getRestAdapter().create(Pictures.class);
         Pictures.Picture picture;
         picture = new Pictures.Picture();
 
         mTitleText = (EditText) findViewById(R.id.picture_title);
 
-
         picture.setTitle(mTitleText.getText().toString());
-
-//        Bitmap photo = BitmapFactory.decodeResource(getResources(), R.drawable.fluttershy);
-
 
 
         Callback<Pictures.Picture> callback;
@@ -221,7 +223,14 @@ public class New_picture extends Activity {
                 Log.d("Si jalo: ", picture.getTitle());
                 try {
                     pictureDao = Aplication.getApplication().getPictureDao();
+                    albumDao = Aplication.getApplication().getAlbumDao();
+                    picture.setAlbum(albumDao.queryForId(albumid));
                     pictureDao.create(picture);
+
+                    Pictures.Picture new_picture = pictureDao.queryForId(picture.getId());
+                    picturesAdapter.addPicture(new_picture);
+
+
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
@@ -235,11 +244,12 @@ public class New_picture extends Activity {
             }
         };
 
-        repre.createPicture(picture.getTitle(),typedFile,callback);
+        repre.createPicture(picture.getTitle(),albumid,typedFile,callback);
 
 //        Intent mIntent = new Intent();
 //        mIntent.putExtras(bundle);
 //        setResult(RESULT_OK, mIntent);
+
         finish();
     }
 
