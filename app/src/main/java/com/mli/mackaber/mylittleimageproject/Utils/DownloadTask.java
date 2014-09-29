@@ -96,7 +96,7 @@ public class DownloadTask extends AsyncTask<Void, Void, Void> {
                     public Void call() throws Exception {
                         for (Pictures.Picture picture: picturesToInsert) {
                             picture.setAlbum(albumDao.queryForId(picture.getAlbum_id()));
-                            Log.d("Picture #" + picture.getId(), picture.getTitle() + ", " +  picture.getDescription() + ", " + picture.getAlbum().getTitle() );
+                            Log.d("Picture #" + picture.getId(), picture.getTitle() + ", " +  picture.getDescription() + ", " + picture.getAlbum().getTitle() + ", " + picture.getCreated_at().toString() );
                             pictureDao.create(picture);
                         }
                         return null;

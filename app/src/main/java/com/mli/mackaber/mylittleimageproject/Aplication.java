@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.mli.mackaber.mylittleimageproject.adapters.AlbumsAdapter;
 import com.mli.mackaber.mylittleimageproject.adapters.ListAdapter;
 import com.mli.mackaber.mylittleimageproject.adapters.PicturesAdapter;
@@ -21,6 +23,7 @@ import com.mli.mackaber.mylittleimageproject.models.Videos;
 import java.sql.SQLException;
 
 import retrofit.RestAdapter;
+import retrofit.converter.GsonConverter;
 
 /**
  * Created by mackaber on 17/09/14.
@@ -52,8 +55,13 @@ public class Aplication extends Application {
 
         instance=this;
 
+        Gson gson = new GsonBuilder()
+                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss")
+                .create();
+
         restAdapter = new RestAdapter.Builder()
                 .setEndpoint(getString(R.string.server))
+                .setConverter(new GsonConverter(gson))
                 .build();
     }
 

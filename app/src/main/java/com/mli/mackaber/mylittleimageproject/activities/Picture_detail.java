@@ -38,6 +38,7 @@ public class Picture_detail extends Activity {
         TextView text = (TextView) findViewById(R.id.textView);
         ImageView image = (ImageView) findViewById(R.id.displayImage);
         TextView albumtitle = (TextView) findViewById(R.id.albumtitle);
+        TextView created_at = (TextView) findViewById(R.id.created_at);
 
         try {
             pictureDao = Aplication.getApplication().getPictureDao();
@@ -51,6 +52,7 @@ public class Picture_detail extends Activity {
 
         albumtitle.setText(picture.getAlbum().getTitle());
         text.setText(picture.getTitle());
+        created_at.setText(picture.getCreated_at().toString());
         Picasso.with(Aplication.getApplication().getContext()).load(picture.getUrl()).resize(300, 300).into(image);
 
     }
