@@ -28,7 +28,7 @@ import java.sql.SQLException;
 public class DatabaseOrm extends OrmLiteSqliteOpenHelper {
 
     private static final String DATABASE_NAME = "ponies";
-    private static final int DATABASE_VERSION = 12;
+    private static final int DATABASE_VERSION = 15;
     private SQLiteDatabase db;
 
     // the DAO object we use to access the SimpleData table
