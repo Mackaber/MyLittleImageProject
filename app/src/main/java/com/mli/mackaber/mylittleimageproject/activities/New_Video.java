@@ -60,7 +60,6 @@ public class New_video extends Activity {
         albumid = extras.getInt(ALBUM_ID);
 
         videoView = (VideoView) findViewById(R.id.videoPreview);
-        listAdapter = Aplication.getApplication().getListAdapter();
 
         final Button take_picture = (Button) findViewById(R.id.take_video);
         take_picture.setOnClickListener(new View.OnClickListener() {
@@ -86,7 +85,6 @@ public class New_video extends Activity {
 
     private void confirm() {
         Videos repre = Aplication.getApplication().getRestAdapter().create(Videos.class);
-        Pictures.Picture picture;
         video = new Videos.Video();
 
         mTitleText = (EditText) findViewById(R.id.video_title);
@@ -106,6 +104,8 @@ public class New_video extends Activity {
                     albumDao = Aplication.getApplication().getAlbumDao();
                     video.setAlbum(albumDao.queryForId(albumid));
                     videoDao.create(video);
+
+                    listAdapter = Aplication.getApplication().getListAdapter();
 
                     Videos.Video new_video = videoDao.queryForId(video.getId());
                     listAdapter.addItem(new_video);

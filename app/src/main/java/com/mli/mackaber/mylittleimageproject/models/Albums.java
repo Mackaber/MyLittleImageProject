@@ -38,6 +38,8 @@ public interface Albums {
         private Date created_at;
         @DatabaseField
         private Date updated_at;
+        @DatabaseField
+        private int user_id ;
         @ForeignCollectionField
         ForeignCollection<Pictures.Picture> pictures;
         @ForeignCollectionField

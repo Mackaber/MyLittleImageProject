@@ -72,7 +72,7 @@ public class ListAdapter extends ArrayAdapter<String> {
     }
 
     // Add an item collection
-    public void addPictures(List<Object> items){
+    public void addItems(List<Object> items){
         this.items.addAll(items);
         this.notifyDataSetChanged();
     }

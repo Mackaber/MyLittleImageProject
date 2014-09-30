@@ -55,7 +55,11 @@ public class Album_activity extends Activity {
         Log.d("El user Mail: ",user_email);
         Log.d("El auth Token: ",auth_token);
 
-        if (user_email != "" && auth_token != "") return true;
+        if (user_email != "" && auth_token != "") {
+            Aplication.getApplication().setUser_email(user_email);
+            Aplication.getApplication().setAuth_token(auth_token);
+            return true;
+        }
         else return false;
     }
 
@@ -64,9 +68,9 @@ public class Album_activity extends Activity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.album_activity, menu);
-        menu.add(0, CLEAR_DB, 0, R.string.clear_database);
-        menu.add(1,NEW_ALBUM,1,R.string.new_album);
-        menu.add(2,LOG_OUT,2,R.string.log_out);
+        menu.add(1, CLEAR_DB, 1, R.string.clear_database);
+        menu.add(2, NEW_ALBUM, 2,R.string.new_album);
+        menu.add(3, LOG_OUT, 3,R.string.log_out);
         return true;
     }
 
@@ -82,9 +86,9 @@ public class Album_activity extends Activity {
                 return true;
             case NEW_ALBUM:
                 new_album();
+                return true;
             case LOG_OUT:
-                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                startActivity(intent);
+                log_out();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -103,6 +107,29 @@ public class Album_activity extends Activity {
     public void new_album(){
         Intent intent = new Intent(getApplicationContext(), New_album.class);
         startActivity(intent);
+    }
+
+    public void log_out(){
+        SharedPreferences sharedPref = this.getSharedPreferences(
+                getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(getString(R.string.user_email), "");
+        editor.putString(getString(R.string.auth_token), "");
+        editor.commit();
+
+        Aplication.getApplication().setUser_email("");
+        Aplication.getApplication().setAuth_token("");
+
+        try {
+            Aplication.getApplication().cleanPictures();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     public void cleardatabase(){

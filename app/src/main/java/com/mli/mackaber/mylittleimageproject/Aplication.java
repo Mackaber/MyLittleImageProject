@@ -5,6 +5,7 @@ import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -45,7 +46,7 @@ public class Aplication extends Application {
     private VideosAdapter videosAdapter;
     private ListAdapter listAdapter;
 
-    private String user_id;
+    private String user_email;
     private String auth_token;
 
 
@@ -57,19 +58,25 @@ public class Aplication extends Application {
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         databaseHelper = new DatabaseOrm(this);
 
-
-
         instance=this;
+
+        SharedPreferences sharedPref = this.getSharedPreferences(
+                getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+
+        user_email = sharedPref.getString(getString(R.string.user_email),"");
+        auth_token = sharedPref.getString(getString(R.string.auth_token),"");
 
         Gson gson = new GsonBuilder()
                 .setDateFormat("yyyy-MM-dd'T'HH:mm:ss")
                 .create();
 
+        Log.d("Credentials :",user_email + ", " + auth_token);
+
         RequestInterceptor requestInterceptor = new RequestInterceptor() {
             @Override
             public void intercept(RequestInterceptor.RequestFacade request) {
-                request.addHeader("Content-Type", "cosa");
-//                request.addHeader("auth_token", "Me gustan las vacas");
+                request.addHeader("X-User-Email", user_email);
+                request.addHeader("X-User-Token", auth_token);
             }
         };
 
@@ -134,6 +141,22 @@ public class Aplication extends Application {
             video = databaseHelper.getDao(Videos.Video.class);
         }
         return video;
+    }
+
+    public String getUser_email() {
+        return user_email;
+    }
+
+    public void setUser_email(String user_email) {
+        this.user_email = user_email;
+    }
+
+    public String getAuth_token() {
+        return auth_token;
+    }
+
+    public void setAuth_token(String auth_token) {
+        this.auth_token = auth_token;
     }
 
     @Override

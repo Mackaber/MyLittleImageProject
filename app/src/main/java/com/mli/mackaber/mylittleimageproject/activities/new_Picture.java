@@ -57,6 +57,8 @@ public class New_picture extends Activity {
     private ImageView ivImage;
     private int albumid;
 
+    private Pictures.Picture picture;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,8 +68,6 @@ public class New_picture extends Activity {
         albumid = extras.getInt(ALBUM_ID);
 
         ivImage = (ImageView) findViewById(R.id.imagePreview);
-
-        listAdapter = Aplication.getApplication().getListAdapter();
 
         final Button confirm = (Button) findViewById(R.id.confirm_button);
         confirm.setOnClickListener(new View.OnClickListener() {
@@ -207,7 +207,6 @@ public class New_picture extends Activity {
 
     private void confirm() {
         Pictures repre = Aplication.getApplication().getRestAdapter().create(Pictures.class);
-        Pictures.Picture picture;
         picture = new Pictures.Picture();
 
         mTitleText = (EditText) findViewById(R.id.picture_title);
@@ -227,6 +226,8 @@ public class New_picture extends Activity {
                     albumDao = Aplication.getApplication().getAlbumDao();
                     picture.setAlbum(albumDao.queryForId(albumid));
                     pictureDao.create(picture);
+
+                    listAdapter = Aplication.getApplication().getListAdapter();
 
                     Pictures.Picture new_picture = pictureDao.queryForId(picture.getId());
                     listAdapter.addItem(new_picture);
