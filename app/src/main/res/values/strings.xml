@@ -4,11 +4,14 @@
     <string name="app_name">Pictures</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-    <string name="server">http://192.168.0.3:3000/</string>
+    <string name="server">http://192.168.0.4:3000/</string>
     <string name="clear_database">Clear Database</string>
+    <string name="log_out">Log Out</string>
     <string name="new_picture">New Picture</string>
     <string name="new_video">New Video</string>
     <string name="new_album">New Album</string>
+    <string name="user_name">user_name</string>
+    <string name="auth_key">auth_key</string>
     <string name="title_activity_album_activity">Albums</string>
     <string name="title_activity_picture_activity">Pictures</string>
     <string name="title_activity_album_detail">Album Detail</string>
@@ -17,5 +20,9 @@
     <string name="title_activity_new_picture">New Picture</string>
     <string name="title_activity_new__video">New_Video</string>
     <string name="title_activity_video_detail">Video_detail</string>
+    <string name="preference_file_key">com.mli.shadow</string>
+    <string name="user_id">user_id</string>
+    <string name="auth_token">auth_token</string>
+    <string name="user_email">user_email</string>
 
 </resources>

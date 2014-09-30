@@ -22,6 +22,7 @@ import com.mli.mackaber.mylittleimageproject.models.Videos;
 
 import java.sql.SQLException;
 
+import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 import retrofit.converter.GsonConverter;
 
@@ -44,6 +45,9 @@ public class Aplication extends Application {
     private VideosAdapter videosAdapter;
     private ListAdapter listAdapter;
 
+    private String user_id;
+    private String auth_token;
+
 
     public Aplication() { instance = this; }
 
@@ -53,15 +57,26 @@ public class Aplication extends Application {
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         databaseHelper = new DatabaseOrm(this);
 
+
+
         instance=this;
 
         Gson gson = new GsonBuilder()
                 .setDateFormat("yyyy-MM-dd'T'HH:mm:ss")
                 .create();
 
+        RequestInterceptor requestInterceptor = new RequestInterceptor() {
+            @Override
+            public void intercept(RequestInterceptor.RequestFacade request) {
+                request.addHeader("Content-Type", "cosa");
+//                request.addHeader("auth_token", "Me gustan las vacas");
+            }
+        };
+
         restAdapter = new RestAdapter.Builder()
                 .setEndpoint(getString(R.string.server))
                 .setConverter(new GsonConverter(gson))
+                .setRequestInterceptor(requestInterceptor)
                 .build();
     }
 
